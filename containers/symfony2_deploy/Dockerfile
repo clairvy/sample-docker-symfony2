@@ -20,21 +20,8 @@ RUN yum install -y python-setuptools
 RUN easy_install supervisor
 ADD files/etc/supervisord.conf /etc/supervisord.conf
 
-# php-apache
-RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/epel-release-6-5.noarch.rpm
-RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-11.ius.el6.noarch.rpm
-RUN yum install -y php54 php54-mbstring php54-xml php54-intl php54-process php54-mysql
+# capifony
 
-# symfony2
-RUN cd /usr/local/bin && curl -s https://getcomposer.org/installer | php
-
-# http
-RUN mkdir /var/www/dev
-RUN ln -s /data/symfony2/web/webroot/logs /var/www/dev/logs
-RUN ln -s /data/symfony2/web/webroot/Symfony/web /var/www/dev/public_html
-ADD files/etc/httpd/conf.d/vhost.conf /etc/httpd/conf.d/vhost.conf
-ADD files/etc/php.ini /etc/php.ini
-
-EXPOSE 80 22
+EXPOSE 22
 
 CMD ["/usr/bin/supervisord"]

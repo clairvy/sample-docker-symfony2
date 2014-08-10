@@ -1,17 +1,23 @@
 DOCKER = docker -H $(DOCKER_HOST)
 DOCKER_HOST = $(shell boot2docker up 2>&1 | awk -F= '/export/{print $$2}')
 CP = cp
+FIND = find
+XARGS = xargs
 
 DOCKER_RUN_OPTS = --volumes-from my-data
 SUB_MAKEFILES = $(addsuffix /Makefile,$(wildcard containers/*))
 
 default: build
 
-run build destroy: $(SUB_MAKEFILES)
+run build destroy: make
 	for d in containers/*; do \
-  base=`basename $$d`; \
-  (cd $$d && $(MAKE) $@ BASE=$$base); \
+  (cd $$d && $(MAKE) $@); \
   done
+
+make: $(SUB_MAKEFILES)
 
 %/Makefile: sub_Makefile
 	$(CP) sub_Makefile $@
+
+clean:
+	$(FIND) * -type f -name '*~' | $(XARGS) $(RM) $(RMF)
