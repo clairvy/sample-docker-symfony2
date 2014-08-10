@@ -1,0 +1,17 @@
+DOCKER = docker -H $(DOCKER_HOST)
+DOCKER_HOST = $(shell boot2docker up 2>&1 | awk -F= '/export/{print $$2}')
+DOCKER_RUN_OPTS = --volumes-from my-data
+#DOCKER_RUN_ANOTHER_OPTS = $(shell if [ -f docker_run_another_opt.conf ]; then cat docker_run_another_opt.conf; fi)
+DOCKER_RUN_ANOTHER_OPTS = $(shell cat docker_run_another_opt.conf)
+BASE = 
+
+default: build
+
+run:
+	$(DOCKER) run $(DOCKER_RUN_OPTS) -d $(DOCKER_RUN_ANOTHER_OPTS) --name $(BASE) $(BASE)
+
+build:
+	$(DOCKER) build -t $(BASE) .
+
+destroy:
+	$(DOCKER) stop $(BASE); $(DOCKER) rm $(BASE)
