@@ -2,12 +2,18 @@ DOCKER = docker -H $(DOCKER_HOST)
 DOCKER_HOST = $(shell boot2docker up 2>&1 | awk -F= '/export/{print $$2}')
 DOCKER_RUN_OPTS = --volumes-from my-data
 DOCKER_RUN_ANOTHER_OPTS = $(shell if [ -f docker_run_another_opt.conf ]; then cat docker_run_another_opt.conf; fi)
+DOCKER_RUN_INIT_CMD = $(shell if [ -f docker_run_init_cmd.conf ]; then cat docker_run_init_cmd.conf; fi)
 BASE = $(notdir $(shell pwd))
 
 default: build
 
-run:
+run: init
 	$(DOCKER) run $(DOCKER_RUN_OPTS) -d -P $(DOCKER_RUN_ANOTHER_OPTS) --name $(BASE) $(BASE)
+
+init:
+	if [ -f docker_run_init_cmd.conf ]; then \
+  $(DOCKER) run $(DOCKER_RUN_OPTS) -i -t --rm $(DOCKER_RUN_ANOTHER_OPTS) $(BASE) $(DOCKER_RUN_INIT_CMD); \
+  fi
 
 build:
 	$(DOCKER) build -t $(BASE) .

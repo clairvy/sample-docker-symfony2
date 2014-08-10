@@ -21,6 +21,9 @@ RUN easy_install supervisor
 ADD files/etc/supervisord.conf /etc/supervisord.conf
 
 # mysql
+RUN yum install -y mysql-server
+RUN rmdir /var/lib/mysql && ln -s /data/symfony2/dbm/mysql /var/lib/mysql
+ADD files/init /init
 
 EXPOSE 3306 22
 
