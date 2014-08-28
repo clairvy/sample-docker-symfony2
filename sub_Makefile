@@ -4,6 +4,11 @@ DOCKER_RUN_OPTS = --volumes-from my-data
 DOCKER_RUN_ANOTHER_OPTS = $(shell if [ -f docker_run_another_opt.conf ]; then cat docker_run_another_opt.conf; fi)
 DOCKER_RUN_INIT_CMD = $(shell if [ -f docker_run_init_cmd.conf ]; then cat docker_run_init_cmd.conf; fi)
 BASE = $(notdir $(shell pwd))
+SSH = ssh
+SSH_OPTS = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p $(SSH_PORT)
+SSH_PORT = $(shell $(DOCKER) port $(BASE) 22 | awk -F: '{print $$2}')
+SSH_USER = kitchen
+SSH_HOST = $(shell boot2docker ip 2>&1 | awk -F: '/IP/{print $$2}' | sed -e 's/ //')
 
 default: build
 
@@ -14,6 +19,9 @@ init:
 	if [ -f docker_run_init_cmd.conf ]; then \
   $(DOCKER) run $(DOCKER_RUN_OPTS) -i -t --rm $(DOCKER_RUN_ANOTHER_OPTS) $(BASE) $(DOCKER_RUN_INIT_CMD); \
   fi
+
+login:
+	$(SSH) $(SSH_OPTS) $(SSH_USER)@$(SSH_HOST)
 
 build:
 	$(DOCKER) build -t $(BASE) .
