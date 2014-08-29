@@ -13,6 +13,7 @@ AWK = awk
 GREP = grep
 IS_CONTAINER = $(DOCKER) inspect $(BASE) | $(GREP) 'Pid' > /dev/null 2>&1
 IS_CONTAINER_STOP = $(DOCKER) inspect $(BASE) | $(AWK) '/Pid/{print $$2}' | $(GREP) '^0,' > /dev/null 2>&1
+GENERATED_FILES = keys/id_rsa
 
 default: build
 
@@ -37,11 +38,17 @@ init:
   fi; \
   fi
 
-login:
-	$(SSH) $(SSH_OPTS) $(SSH_USER)@$(SSH_HOST)
+login: keys/id_rsa
+	$(SSH) $(SSH_OPTS) -i keys/id_rsa $(SSH_USER)@$(SSH_HOST)
+
+keys/id_rsa:
+	$(DOCKER) cp $(BASE):/home/kitchen/.ssh/id_rsa $@
 
 build:
 	$(DOCKER) build -t $(BASE) .
 
 destroy:
 	$(DOCKER) stop $(BASE); $(DOCKER) rm $(BASE)
+
+clean:
+	$(RM) $(RMF) $(GENERATED_FILES)

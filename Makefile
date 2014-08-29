@@ -21,3 +21,6 @@ make: $(SUB_MAKEFILES)
 
 clean:
 	$(FIND) * -type f -name '*~' | $(XARGS) $(RM) $(RMF)
+	for d in containers/*; do \
+  (cd $$d && $(MAKE) $@); \
+  done
