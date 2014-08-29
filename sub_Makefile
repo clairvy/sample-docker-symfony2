@@ -9,15 +9,32 @@ SSH_OPTS = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p $(SSH_
 SSH_PORT = $(shell $(DOCKER) port $(BASE) 22 | awk -F: '{print $$2}')
 SSH_USER = kitchen
 SSH_HOST = $(shell boot2docker ip 2>&1 | awk -F: '/IP/{print $$2}' | sed -e 's/ //')
+AWK = awk
+GREP = grep
+IS_CONTAINER = $(DOCKER) inspect $(BASE) | $(GREP) 'Pid' > /dev/null 2>&1
+IS_CONTAINER_STOP = $(DOCKER) inspect $(BASE) | $(AWK) '/Pid/{print $$2}' | $(GREP) '^0,' > /dev/null 2>&1
 
 default: build
 
-run: init
-	$(DOCKER) run $(DOCKER_RUN_OPTS) -d -P $(DOCKER_RUN_ANOTHER_OPTS) --name $(BASE) $(BASE)
+run: init start
+	if $(IS_CONTAINER); then \
+    : \
+  else; \
+  echo $(DOCKER) run $(DOCKER_RUN_OPTS) -d -P $(DOCKER_RUN_ANOTHER_OPTS) --name $(BASE) $(BASE); \
+  fi
+
+start:
+	if $(IS_CONTAINER_STOP); then \
+  $(DOCKER) start $(BASE); \
+  fi
 
 init:
 	if [ -f docker_run_init_cmd.conf ]; then \
+  if $(IS_CONTAINER); then \
+    : \
+  else; \
   $(DOCKER) run $(DOCKER_RUN_OPTS) -i -t --rm $(DOCKER_RUN_ANOTHER_OPTS) $(BASE) $(DOCKER_RUN_INIT_CMD); \
+  fi; \
   fi
 
 login:
