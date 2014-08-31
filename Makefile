@@ -20,7 +20,7 @@ make: $(SUB_MAKEFILES)
 	$(CP) sub_Makefile $@
 
 clean:
-	$(FIND) * -type f -name '*~' | $(XARGS) $(RM) $(RMF)
+	$(FIND) . \! -name '.git' -type f -name '*~' -print0 | $(XARGS) -0 $(RM) $(RMF)
 	for d in containers/*; do \
   (cd $$d && $(MAKE) $@); \
   done
