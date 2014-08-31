@@ -33,7 +33,7 @@ ENV HOME /home/kitchen
 RUN rbenv install 2.1.2 && rbenv global 2.1.2
 
 # capifony
-RUN gem install capifony
+RUN eval "$(rbenv init -)" && gem install capifony
 
 USER root
 

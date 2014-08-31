@@ -22,7 +22,7 @@ ADD files/etc/supervisord.conf /etc/supervisord.conf
 
 # mysql
 RUN yum install -y mysql-server
-RUN rmdir /var/lib/mysql && ln -s /data/symfony2/dbs/mysql /var/lib/mysql
+RUN rmdir /var/lib/mysql && ln -s /data/symfony2/db1m/mysql /var/lib/mysql
 ADD files/etc/my.cnf /etc/my.cnf
 ADD files/init /init
 
