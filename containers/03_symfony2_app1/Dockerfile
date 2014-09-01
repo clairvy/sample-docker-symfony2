@@ -21,8 +21,8 @@ RUN easy_install supervisor
 ADD files/etc/supervisord.conf /etc/supervisord.conf
 
 # php-apache
-RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/epel-release-6-5.noarch.rpm
-RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-11.ius.el6.noarch.rpm
+RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/epel-release-6-5.noarch.rpm
+RUN rpm -ivh http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-13.ius.centos6.noarch.rpm
 RUN yum install -y php54 php54-mbstring php54-xml php54-intl php54-process php54-mysql
 
 # symfony2
