@@ -1,0 +1,6 @@
+SCP = scp
+
+put-key:
+	( cd ../03_symfony2_app1 && $(MAKE) keys/id_rsa )
+	$(SSH) $(SSH_OPTS) -i keys/id_rsa $(SSH_USER)@$(SSH_HOST) "bash -c 'if [ ! -d .ssh/app1 ]; then mkdir -p .ssh/app1; fi'"
+	$(SCP) $(subst -p,-P,$(SSH_OPTS)) -i keys/id_rsa ../03_symfony2_app1/keys/id_rsa $(SSH_USER)@$(SSH_HOST):.ssh/app1/id_rsa

@@ -48,3 +48,5 @@ destroy:
 
 clean:
 	$(RM) $(RMF) $(GENERATED_FILES)
+
+-include makefile.local
