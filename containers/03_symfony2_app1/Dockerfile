@@ -32,9 +32,10 @@ RUN cd /usr/local/bin && curl -s https://getcomposer.org/installer | php
 RUN yum install -y git
 
 # http
-RUN mkdir /var/www/dev
+RUN mkdir /var/www/dev && mkdir -p /var/www/staging/shared/app/logs /var/www/prod/shared/app/logs && chown -Rh kitchen.kitchen /var/www/staging /var/www/prod && chmod 777 /var/www/staging/shared/app/logs /var/www/prod/shared/app/logs
 RUN ln -s /data/symfony2/app1/webroot/logs /var/www/dev/logs
 RUN ln -s /data/symfony2/app1/webroot/Symfony/web /var/www/dev/public_html
+RUN sed -i.bak -e 's/^#\(NameVirtualHost\)/\1/' /etc/httpd/conf/httpd.conf
 ADD files/etc/httpd/conf.d/ /etc/httpd/conf.d/
 ADD files/etc/php.ini /etc/php.ini
 
