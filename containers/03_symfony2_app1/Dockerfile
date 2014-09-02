@@ -28,6 +28,9 @@ RUN yum install -y php54 php54-mbstring php54-xml php54-intl php54-process php54
 # symfony2
 RUN cd /usr/local/bin && curl -s https://getcomposer.org/installer | php
 
+# deploy from scm
+RUN yum install -y git
+
 # http
 RUN mkdir /var/www/dev
 RUN ln -s /data/symfony2/app1/webroot/logs /var/www/dev/logs
