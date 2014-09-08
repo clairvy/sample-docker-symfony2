@@ -44,7 +44,9 @@ build:
 	$(DOCKER) build -t $(BASE) .
 
 destroy:
-	$(DOCKER) stop $(BASE); $(DOCKER) rm $(BASE)
+	if $(IS_CONTAINER_EXIST); then \
+  $(DOCKER) stop $(BASE); $(DOCKER) rm $(BASE); \
+  fi
 
 clean:
 	$(RM) $(RMF) $(GENERATED_FILES)
