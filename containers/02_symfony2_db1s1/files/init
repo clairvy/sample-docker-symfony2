@@ -1,3 +1,14 @@
+#!/bin/sh
+
 service mysqld start
-mysql -u root -e "CHANGE MASTER TO MASTER_HOST='db1m', MASTER_USER='repl', MASTER_PASSWORD='repl_pass';"
+
+mysql -u root -e 'stop slave;'
+
+repl_host=db1m
+repl_user=repl
+repl_pass=repl_pass
+mysql -u root -e "CHANGE MASTER TO MASTER_HOST='$repl_host', MASTER_USER='$repl_user', MASTER_PASSWORD='$repl_pass';"
+
+mysql -u root -e 'start slave;'
+
 service mysqld stop

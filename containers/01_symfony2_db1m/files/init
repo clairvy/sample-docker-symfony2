@@ -1,7 +1,19 @@
 #!/bin/sh
-dbname=symfony2_dev_db
+
 service mysqld start
-mysql -u root -e "create database if not exists $dbname"
-mysql -u root -e "grant all on $dbname.* to symfony2_user@'172.17.%' identified by 'symfony2_pass' with grant option"
-mysql -u root -e "grant replication slave on *.* to 'repl'@'172.17.%' identified by 'repl_pass' with grant option"
+
+prefix='s2_'
+stages='dev staging prod'
+for s in $stages; do
+  dbname="${prefix}${s}_db"
+  user="${prefix}${s}_u";      # restricted length by mysql < 16
+  pass="${prefix}${s}_pass"
+  mysql -u root -e "create database if not exists $dbname"
+  mysql -u root -e "grant all on $dbname.* to '$user'@'172.17.%' identified by '$pass' with grant option"
+done
+
+repl_user=repl
+repl_pass=repl_pass
+mysql -u root -e "grant replication slave on *.* to '$repl_user'@'172.17.%' identified by '$repl_pass' with grant option"
+
 service mysqld stop
